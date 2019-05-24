@@ -22,7 +22,7 @@ def obidjiDirektorijume():
     rezultat = []
     ids = []
     bazni_direktorijum = os.path.dirname(os.path.abspath(__file__))
-    putanja_slika = os.path.join(bazni_direktorijum, "slike")
+    putanja_slika = os.path.join(bazni_direktorijum, "feret")
 
     # Obilazak svih direktorijuma u kojima se nalaze lica
     for root, direktorijum, fajlovi in os.walk(putanja_slika):
@@ -103,21 +103,27 @@ def slikaZaTest(leviOkvir):
     listaLica = face_recognition.face_landmarks(slika)
 
     rezultat = obradiSliku(obradjena_direktorijum)
-    print(rezultat)
-    x_test = np.array(rezultat).reshape(1, 10)
+    #print(rezultat)
 
-    for widget in leviOkvir.winfo_children():
-        widget.destroy()
-    for lice in listaLica:
-        for crteLica in lice.keys():
-            d.line(lice[crteLica], width=5)
+    if (rezultat != None):
+        x_test = np.array(rezultat).reshape(1, 10)
 
-    tkpi = PIL.ImageTk.PhotoImage(pil_slika)
-    mestoZaSluku = Label(leviOkvir, image=tkpi, width=400, height=350)
-    mestoZaSluku.image = tkpi
-    mestoZaSluku.pack(padx=20)
+        for widget in leviOkvir.winfo_children():
+            widget.destroy()
+        for lice in listaLica:
+            for crteLica in lice.keys():
+                d.line(lice[crteLica], width=5)
 
-    treniraj2(x_trening, y_trening, x_test, leviOkvir)
+        tkpi = PIL.ImageTk.PhotoImage(pil_slika)
+        mestoZaSluku = Label(leviOkvir, image=tkpi, width=400, height=350)
+        mestoZaSluku.image = tkpi
+        mestoZaSluku.pack(padx=20)
+        treniraj2(x_trening, y_trening, x_test, leviOkvir)
+    else:
+        greska = Label(leviOkvir, text="Ne postoji lice na slici")
+        greska.pack(pady = 5)
+
+
 
 def obidjiDirektorijumeZaTest(leviOkvir):
 
@@ -223,7 +229,9 @@ def trenirajZaTest(x_trening, y_trening, x_test, y_test, leviOkvir):
     y_pred_trening = model.predict_classes(x_trening)
     y_pred_test = model.predict_classes(x_test)
 
-
+    print(y_test)
+    print(len(y_test))
+    print(y_pred_test)
 
     brojPogodjenihTrening = 0
     for i in range(0, len(y_trening)):
@@ -283,6 +291,15 @@ def treniraj2(x_trening, y_trening, x_test, leviOkvir):
 
     labelaRezultat = Label(leviOkvir, text="Osoba " + str(y_pred[0]))
     labelaRezultat.pack(pady=10)
+
+    nizVerovatnoca = model.predict_proba(x_test)
+    for i in range(0, len(nizVerovatnoca[0])):
+        verovatnoca = nizVerovatnoca[0][i] * 100.00
+        if (verovatnoca > 10 and verovatnoca < 50):
+            labelaVerovatnoca = Label(leviOkvir,
+                                      text="Ova osoba " + "lici na osobu " + str(i) + " u procentu od " + str(
+                                          round(verovatnoca, 2)) + "%")
+            labelaVerovatnoca.pack(pady=5)
 
 
 
