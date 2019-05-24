@@ -226,13 +226,11 @@ def trenirajZaTest(x_trening, y_trening, x_test, y_test, leviOkvir):
 
 
     brojPogodjenihTrening = 0
-    for i in range(0, len(x_train)):
+    for i in range(0, len(y_trening)):
         if(y_trening[i] == y_pred_trening[i]):
-            brojPogodjenihTrening = brojPogodjenihTreningT + 1
+            brojPogodjenihTrening = brojPogodjenihTrening + 1
 
-
-
-    ukupnoTest = 0
+    brojPogodjenihTest = 0
     for i in range(0, len(y_test)):
         if (y_test[i] == y_pred_test[i]):
             brojPogodjenihTest = brojPogodjenihTest + 1
@@ -249,7 +247,7 @@ def trenirajZaTest(x_trening, y_trening, x_test, y_test, leviOkvir):
 
     labelaRezultat2.pack(pady=10, padx=20)
 
-    matricaKonfuzije = confusion_matrix(y_train, y_pred_train)
+    matricaKonfuzije = confusion_matrix(y_trening, y_pred_trening)
     matricaKonfuzijeTest = confusion_matrix(y_test, y_pred_test)
 
     dugmeZaMatricu = Button(leviOkvir, text='Prikazi matricu konfuzije', width=20,
